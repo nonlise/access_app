@@ -54,6 +54,27 @@ def create_element(element_data: ElementCreate, _ = Depends(require_admin), db: 
     db.refresh(new_element)
     return new_element
 
+@router.delete("/elements/{element_id}/")
+def delete_element(
+    element_id: int, 
+    _ = Depends(require_admin), 
+    db: Session = Depends(get_db)
+):
+    element = db.query(BusinessElement).filter(BusinessElement.id == element_id).first()
+    if not element:
+        raise HTTPException(404, "Business element not found")
+    
+    rules_with_element = db.query(AccessRule).filter(AccessRule.element_id == element_id).first()
+    if rules_with_element:
+        raise HTTPException(400, "Cannot delete element: access rules are using this element")
+    
+    db.query(AccessRule).filter(AccessRule.element_id == element_id).delete()
+    
+    db.delete(element)
+    db.commit()
+    
+    return {"message": f"Business element '{element.name}' deleted successfully"}
+
 # Access Rules
 @router.get("/rules/")
 def list_rules(_ = Depends(require_admin), db: Session = Depends(get_db)):
