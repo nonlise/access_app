@@ -188,6 +188,71 @@ python scripts/init_db.py
 uvicorn app.main:app --reload
 ```
 
+
+## Способ 2: Запуск через Docker
+
+### 1. Убедиться, что установлены Docker и Docker Compose
+
+```bash
+docker --version
+docker compose version
+```
+
+### 2. Создать файл .env (если ещё не создан)
+
+```env
+SECRET_KEY=your-super-secret-key-change-me
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+DATABASE_URL=sqlite:///./auth_app.db
+```
+
+### 3. Собрать и запустить контейнер
+
+```bash
+docker compose up --build
+```
+
+Приложение будет доступно по адресу: `http://localhost:8000`
+
+### 4. Остановить контейнер
+
+```bash
+docker compose down
+```
+
+
+Также вот более компактный вариант, если нужно сохранить исходную структуру:
+
+```markdown
+**Способ 2: Запуск через Docker (рекомендуется для production)**
+
+1. **Убедиться, что установлены Docker и Docker Compose**
+   ```bash
+   docker --version
+   docker compose version
+   ```
+
+2. **Создать файл .env (если ещё не создан)**
+   ```env
+   SECRET_KEY=your-super-secret-key-change-in-production
+   ALGORITHM=HS256
+   ACCESS_TOKEN_EXPIRE_MINUTES=30
+   DATABASE_URL=sqlite:///./data/auth_app.db
+   ```
+
+3. **Собрать и запустить контейнер**
+   ```bash
+   docker compose up --build
+   ```
+   Приложение будет доступно по адресу: `http://localhost:8000`
+
+4. **Остановить контейнер**
+   ```bash
+   docker compose down
+   ```
+```
+
 Документация API: http://localhost:8000/docs
 
 ## Тестовые данные
@@ -250,6 +315,30 @@ Authorization: Bearer <your-token>
 DELETE http://localhost:8000/api/articles/1/delete/
 Authorization: Bearer <john-token>
 ```
+## Тестирование с помщью pytest
+
+### 1. Тесты
+```
+test_register_success	Успешная регистрация пользователя
+test_register_password_mismatch	Ошибка при несовпадении паролей
+test_login_success	Успешный вход в систему
+test_login_invalid_password	Ошибка при неверном пароле
+test_protected_endpoint_without_token	401 при запросе без токена
+```
+
+### 2. Выполнить тесты
+```
+python -m pytest -v
+```
+### 3. Ожидаемый вывод при успешном запуске
+```
+tests/test_auth.py::test_register_success PASSED
+tests/test_auth.py::test_register_password_mismatch PASSED
+tests/test_auth.py::test_login_success PASSED
+tests/test_auth.py::test_login_invalid_password PASSED
+tests/test_auth.py::test_protected_endpoint_without_token PASSED
+```
+
 
 ## Структура проекта
 
@@ -272,6 +361,8 @@ fastapi_auth_project/
 │   └── mock_articles.py  # Хранилище статей
 ├── scripts/
 │   └── init_db.py        # Заполнение тестовыми данными
+├── test/
+│   └── test_auth.py        # тесты
 ├── .env                  # Переменные окружения
 ├── requirements.txt      # Зависимости
 └── README.md             # Документация
