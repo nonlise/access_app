@@ -221,38 +221,6 @@ docker compose up --build
 docker compose down
 ```
 
-
-Также вот более компактный вариант, если нужно сохранить исходную структуру:
-
-```markdown
-**Способ 2: Запуск через Docker (рекомендуется для production)**
-
-1. **Убедиться, что установлены Docker и Docker Compose**
-   ```bash
-   docker --version
-   docker compose version
-   ```
-
-2. **Создать файл .env (если ещё не создан)**
-   ```env
-   SECRET_KEY=your-super-secret-key-change-in-production
-   ALGORITHM=HS256
-   ACCESS_TOKEN_EXPIRE_MINUTES=30
-   DATABASE_URL=sqlite:///./data/auth_app.db
-   ```
-
-3. **Собрать и запустить контейнер**
-   ```bash
-   docker compose up --build
-   ```
-   Приложение будет доступно по адресу: `http://localhost:8000`
-
-4. **Остановить контейнер**
-   ```bash
-   docker compose down
-   ```
-```
-
 Документация API: http://localhost:8000/docs
 
 ## Тестовые данные
